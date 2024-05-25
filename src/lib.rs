@@ -1,14 +1,31 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
+#![no_std]
+
+use contract::StoreContract;
+use gstd::{msg, ToString};
+use io::InitStore;
+
+mod contract;
+mod handler;
+mod state;
+
+static mut STORE: Option<StoreContract> = None;
+
+pub fn get_store() -> &'static mut StoreContract {
+    unsafe {
+        STORE.as_mut().unwrap()
+    }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+#[no_mangle]
+extern "C" fn init() {
+    let init_config: InitStore = msg::load().expect("unable to load message");
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+    unsafe {
+        STORE = Some(StoreContract {
+            store_admins: init_config.admins,
+            ..Default::default()
+        })
     }
+
+    let _ = msg::reply("Store contract initialized".to_string(), 0);
 }

@@ -24,6 +24,7 @@ pub enum StoreAction {
         liberation_era: u64,
         liberation_days: u64,
     },
+    DeleteUnestake(u128),
     FetchUnestake {
         user: ActorId,
         unestake_id: UnestakeId,
@@ -34,7 +35,8 @@ pub enum StoreAction {
 #[derive(TypeInfo, Encode, Decode)]
 pub enum StoreResponse {
     TransactionStored,
-    UnestakeStored,
+    UnestakeStored(u128),
+    UnestakeDeleted,
     Unestake {
         unestake: Unestake,
     },
@@ -46,7 +48,9 @@ pub enum StoreError {
     UserNotFound,
     UnestakeNotFound,
     AdminAlreadyExists,
+    InssuficientBalance,
     NotAdmin,
+    StoreNotAvailable
 }
 
 #[derive(TypeInfo, Encode, Decode, Clone)]
@@ -55,6 +59,7 @@ pub struct Unestake {
     pub amount: Gvara,
     pub liberation_era: u64,
     pub liberation_days: u64,
+    pub interest_percent: u128
 }
 
 #[derive(TypeInfo, Encode, Decode, Clone)]

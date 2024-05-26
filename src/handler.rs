@@ -30,6 +30,7 @@ extern "C" fn handle() {
         StoreAction::AddAmin(admin) => {
             store.add_admin(admin)
         },
+        StoreAction::DeleteUnestake(_) => todo!(),
     };
 
     let _ = msg::reply(result, 0);

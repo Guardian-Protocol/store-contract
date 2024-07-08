@@ -26,11 +26,13 @@ impl StoreContract {
                 amount,
             });
 
+            u.user_total_vara_staked += if t_type == "stake" { amount } else { 0 };
+            
             u.transaction_id_counter += 1;
         }).or_insert(UserInformation {
             transaction_id_counter: 1,
             unestake_id_counter: 0,
-            user_total_vara_staked: 0,
+            user_total_vara_staked: if t_type == "stake" { amount } else { 0 },
             transactions: vec![
                 Transaction {
                     transaction_id: 0,
@@ -69,6 +71,21 @@ impl StoreContract {
         if let Some(user) = self.users.get(&user) {
             if let Some(unestake) = user.unestakes.clone().into_iter().find(|u| u.unestake_id == unestale_id) {
                 Ok(StoreResponse::Unestake { unestake: unestake.clone() })
+            } else {
+                Err(StoreError::UnestakeNotFound)
+            }
+        } else {
+            Err(StoreError::UserNotFound)
+        }
+    }
+
+    pub fn delete_unestake(&mut self, unestale_id: UnestakeId, user: ActorId) -> Result<StoreResponse, StoreError>  {
+        if let Some(user) = self.users.get_mut(&user) {
+            if let Some(_) = user.unestakes.clone().into_iter().find(|u| u.unestake_id == unestale_id) {
+                let unestake_index = user.unestakes.iter().position(|u| u.unestake_id == unestale_id).unwrap();
+                user.unestakes.remove(unestake_index);
+
+                Ok(StoreResponse::UnestakeDeleted)
             } else {
                 Err(StoreError::UnestakeNotFound)
             }

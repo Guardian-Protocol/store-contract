@@ -27,6 +27,9 @@ extern "C" fn handle() {
         StoreAction::FetchUnestake { user, unestake_id } => {
             store.fetch_unestake(user, unestake_id)
         },
+        StoreAction::DeleteUnestake(unestake_id, user) => {
+            store.delete_unestake(unestake_id, user)
+        }
         StoreAction::AddAmin(admin) => {
             store.add_admin(admin)
         },

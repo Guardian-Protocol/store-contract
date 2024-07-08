@@ -11,7 +11,7 @@ pub type Vara = u128;
 
 pub mod state_io;
 
-#[derive(TypeInfo, Encode, Decode)]
+#[derive(TypeInfo, Encode, Decode)] 
 pub enum StoreAction {
     StoreTransaction {
         user: ActorId,
@@ -24,11 +24,12 @@ pub enum StoreAction {
         liberation_era: u64,
         liberation_days: u64,
     },
+    DeleteUnestake(u128, ActorId),
     FetchUnestake {
         user: ActorId,
         unestake_id: UnestakeId,
     },
-    AddAmin(ActorId)
+    AddAmin(ActorId),
 }
 
 #[derive(TypeInfo, Encode, Decode)]
@@ -38,6 +39,7 @@ pub enum StoreResponse {
     Unestake {
         unestake: Unestake,
     },
+    UnestakeDeleted,
     AdminAdded,
 }
 

@@ -1,5 +1,4 @@
 #![no_std]
-
 use contract::StoreContract;
 use gstd::{msg, ToString};
 use io::InitStore;
